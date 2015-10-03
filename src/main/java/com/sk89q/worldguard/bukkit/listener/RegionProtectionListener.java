@@ -19,6 +19,11 @@
 
 package com.sk89q.worldguard.bukkit.listener;
 
+import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.event.ResidencePlayerEvent;
+import com.bekvon.bukkit.residence.listeners.ResidenceBlockListener;
+import com.bekvon.bukkit.residence.listeners.ResidenceEntityListener;
+import com.bekvon.bukkit.residence.listeners.ResidencePlayerListener;
 import com.google.common.base.Predicate;
 import com.sk89q.worldguard.bukkit.RegionQuery;
 import com.sk89q.worldguard.bukkit.WorldConfiguration;
@@ -155,6 +160,7 @@ public class RegionProtectionListener extends AbstractListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onPlaceBlock(final PlaceBlockEvent event) {
+        if(Residence.getResidenceManager().getByLoc(event.getBlocks().get(0).getLocation()) != null) return;
         if (event.getResult() == Result.ALLOW) return; // Don't care about events that have been pre-allowed
         if (!isRegionSupportEnabled(event.getWorld())) return; // Region support disabled
         if (isWhitelisted(event.getCause(), event.getWorld(), false)) return; // Whitelisted cause
@@ -199,6 +205,7 @@ public class RegionProtectionListener extends AbstractListener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBreakBlock(final BreakBlockEvent event) {
+        if(Residence.getResidenceManager().getByLoc(event.getBlocks().get(0).getLocation()) != null) return;
         if (event.getResult() == Result.ALLOW) return; // Don't care about events that have been pre-allowed
         if (!isRegionSupportEnabled(event.getWorld())) return; // Region support disabled
         if (isWhitelisted(event.getCause(), event.getWorld(), false)) return; // Whitelisted cause
@@ -258,27 +265,32 @@ public class RegionProtectionListener extends AbstractListener {
                     what = "use that";
 
                 /* Inventory */
-                } else if (Materials.isInventoryBlock(type)) {
+                }
+                else if (Materials.isInventoryBlock(type)) {
                     canUse = query.testBuild(target, associable, combine(event, DefaultFlag.INTERACT, DefaultFlag.CHEST_ACCESS));
                     what = "open that";
 
                 /* Beds */
-                } else if (type == Material.BED_BLOCK) {
+                }
+                else if (type == Material.BED_BLOCK) {
                     canUse = query.testBuild(target, associable, combine(event, DefaultFlag.INTERACT, DefaultFlag.SLEEP));
                     what = "sleep";
 
                 /* TNT */
-                } else if (type == Material.TNT) {
+                }
+                else if (type == Material.TNT) {
                     canUse = query.testBuild(target, associable, combine(event, DefaultFlag.INTERACT, DefaultFlag.TNT));
                     what = "use explosives";
 
                 /* Legacy USE flag */
-                } else if (Materials.isUseFlagApplicable(type)) {
+                }
+                else if (Materials.isUseFlagApplicable(type)) {
                     canUse = query.testBuild(target, associable, combine(event, DefaultFlag.INTERACT, DefaultFlag.USE));
                     what = "use that";
 
                 /* Everything else */
-                } else {
+                }
+                else {
                     canUse = query.testBuild(target, associable, combine(event, DefaultFlag.INTERACT));
                     what = "use that";
                 }
@@ -293,6 +305,8 @@ public class RegionProtectionListener extends AbstractListener {
         });
     }
 
+
+    // TODO : Voir intégration avec Résidence
     @EventHandler(ignoreCancelled = true)
     public void onSpawnEntity(SpawnEntityEvent event) {
         if (event.getResult() == Result.ALLOW) return; // Don't care about events that have been pre-allowed
@@ -340,6 +354,7 @@ public class RegionProtectionListener extends AbstractListener {
         }
     }
 
+    // TODO : Voir intégration avec Résidence
     @EventHandler(ignoreCancelled = true)
     public void onDestroyEntity(DestroyEntityEvent event) {
         if (event.getResult() == Result.ALLOW) return; // Don't care about events that have been pre-allowed
@@ -376,6 +391,7 @@ public class RegionProtectionListener extends AbstractListener {
         }
     }
 
+    // TODO : Voir intégration avec Résidence
     @EventHandler(ignoreCancelled = true)
     public void onUseEntity(UseEntityEvent event) {
         if (event.getResult() == Result.ALLOW) return; // Don't care about events that have been pre-allowed
@@ -417,6 +433,7 @@ public class RegionProtectionListener extends AbstractListener {
         }
     }
 
+    // TODO : Voir intégration avec Résidence
     @EventHandler(ignoreCancelled = true)
     public void onDamageEntity(DamageEntityEvent event) {
         if (event.getResult() == Result.ALLOW) return; // Don't care about events that have been pre-allowed
@@ -487,6 +504,7 @@ public class RegionProtectionListener extends AbstractListener {
         }
     }
 
+    // TODO : Voir intégration avec Résidence
     @EventHandler(ignoreCancelled = true)
     public void onVehicleExit(VehicleExitEvent event) {
         Entity vehicle = event.getVehicle();

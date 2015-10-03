@@ -38,4 +38,5 @@
   <allow pkg="com.jolbox.bonecp"/>
   <allow pkg="org.flywaydb.core"/>
   <allow pkg="org.json.simple"/>
+  <allow pkg="com.bekvon.bukkit.residence"/>
 </import-control>
